@@ -1,0 +1,7 @@
+name: PWS Pipeline to deploy AWS CodeArtifact Artifacts
+on:
+  workflow_call:
+jobs:
+    deploy_artifact:
+      uses: providence-wealth-systems/.github/.github/workflows/deploy_library.yml@main
+      secrets: inherit

@@ -1,0 +1,15 @@
+name: Deploy AWS SAM Application
+on:
+  workflow_call:
+jobs:
+  deploy_sam_application:
+    name: Deploy AWS SAM Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If AWS SAM Application
+        if: ${{ hashFiles('samconfig.toml') == '' }}
+        run: exit 0

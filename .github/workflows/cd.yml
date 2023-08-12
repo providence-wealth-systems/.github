@@ -1,0 +1,7 @@
+name: Continous Delivery Workflow
+on:
+  workflow_call:
+jobs:
+  deploy_sam:
+    uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
+    secrets: inherit

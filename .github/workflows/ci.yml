@@ -21,3 +21,7 @@ jobs:
     uses: providence-wealth-systems/.github/.github/workflows/docker.yml@main
     needs: vuln_check
     secrets: inherit
+  deploy_production_artifacts:
+    if: github.ref == 'refs/heads/main'
+    uses: providence-wealth-systems/.github/.github/workflows/cd.yml@main
+    secrets: inherit
