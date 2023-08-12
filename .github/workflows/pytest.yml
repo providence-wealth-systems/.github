@@ -1,0 +1,30 @@
+name: Run PyTest
+on:
+    workflow_call:
+jobs:
+  run_pytest:
+    name: Run Tests with PyTest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: aws-actions/setup-sam@v2
+    - uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.WORKFLOW_TOKEN }}
+    - name: Set up Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Install PIP Dependencies
+      run: |
+        aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        pip install -r test-requirements.txt
+        pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
