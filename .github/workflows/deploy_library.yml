@@ -43,6 +43,6 @@ jobs:
           aws-region: us-east-1
       - name: Build and publish
         run: |
-          aws codeartifact login --tool twine --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN }} --domain-owner ${{ secrets.AWS_ACCOUNT_ID }} --region us-east-1
+          aws codeartifact login --tool twine --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN }} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
           python setup.py sdist
           twine upload dist/*
