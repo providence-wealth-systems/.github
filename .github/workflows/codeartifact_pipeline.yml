@@ -1,6 +1,9 @@
 name: PWS Pipeline to deploy AWS CodeArtifact Artifacts
 on:
   workflow_call:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
     deploy_artifact:
       uses: providence-wealth-systems/.github/.github/workflows/deploy_library.yml@main

@@ -1,6 +1,9 @@
 name: Continuous Integration Workflow
 on:
   workflow_call:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   check_for_secrets:
     uses: providence-wealth-systems/.github/.github/workflows/secrets_check.yml@main
