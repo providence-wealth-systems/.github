@@ -1,0 +1,60 @@
+name: Check For Vulnerabilities
+on:
+  workflow_call:
+jobs:
+    trivy_vuln_check:
+      name: Run AquaSecurity Trivy Scan On Files (Vulnerabilities)
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v3
+          with:
+            token: ${{ secrets.WORKFLOW_TOKEN }}
+        - name: Run Trivy Vulnerability Scan
+          uses: aquasecurity/trivy-action@master
+          with:
+            scan-type: 'fs'
+            scanners: 'vuln'
+            github-pat: ${{ secrets.WORKFLOW_TOKEN }}
+            exit-code: 1
+            ignore-unfixed: true
+    dependency_check:
+      name: Runs Dependency Check Against Libraries
+      runs-on: ubuntu-latest
+      steps:
+        - uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+        - name: Checkout Code
+          uses: actions/checkout@v3
+          with:
+            token: ${{ secrets.WORKFLOW_TOKEN }}
+        - name: Create local scan_dependencies Folder
+          run: mkdir scan_dependencies
+        - name: Setup PIP for CodeArtifact Access
+          run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
+        - name: Install Packages Into Local Folder
+          run: pip install -r requirements.txt -t scan_dependencies
+        - name: Check contents/existenace of scan_dependencies folder
+          run: ls -alh scan_dependencies
+        - name: Check github.workspace/scan_dependencies
+          run: ls -alh ${{ github.workspace }}/scan_dependencies
+        - name: Run Dependency Check
+          uses: dependency-check/Dependency-Check_Action@main
+          id: dependency_check
+          with:
+            project: '${{ github.event.repository.name }}'
+            path: 'scan_dependencies'
+            format: 'HTML'
+            out: 'reports'
+            args: >
+              --failOnCVSS 7
+              --cveValidForHours 48
+              --enableExperimental
+        - name: Upload Test results
+          uses: actions/upload-artifact@master
+          with:
+            name: Dependency Check Report
+            path: ${{github.workspace}}/reports

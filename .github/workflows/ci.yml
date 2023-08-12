@@ -11,3 +11,6 @@ jobs:
   run_tests:
     uses: providence-wealth-systems/.github/.github/workflows/pytest.yml@main
     secrets: inherit
+  vuln_check:
+    uses: providence-wealth-systems/.github/.github/workflows/vuln_check.yml@main
+    secrets: inherit
