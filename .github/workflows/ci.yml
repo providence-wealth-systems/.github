@@ -14,3 +14,6 @@ jobs:
   vuln_check:
     uses: providence-wealth-systems/.github/.github/workflows/vuln_check.yml@main
     secrets: inherit
+  build_and_publish_docker:
+    uses: providence-wealth-systems/.github/.github/workflows/docker.yml@main
+    secrets: inherit
