@@ -7,13 +7,17 @@ jobs:
     secrets: inherit
   lint_code:
     uses: providence-wealth-systems/.github/.github/workflows/black_linter.yml@main
+    needs: check_for_secrets
     secrets: inherit
   run_tests:
     uses: providence-wealth-systems/.github/.github/workflows/pytest.yml@main
+    needs: lint_code
     secrets: inherit
   vuln_check:
     uses: providence-wealth-systems/.github/.github/workflows/vuln_check.yml@main
+    needs: run_tests
     secrets: inherit
   build_and_publish_docker:
     uses: providence-wealth-systems/.github/.github/workflows/docker.yml@main
+    needs: vuln_check
     secrets: inherit
