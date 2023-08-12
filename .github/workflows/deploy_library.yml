@@ -5,6 +5,7 @@ jobs:
   determine_if_library:
     name: Determine If Library Repositry
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     outputs:
       file_exists: ${{ steps.is_library.outputs.exists }}
     steps:
@@ -45,4 +46,4 @@ jobs:
         run: |
           aws codeartifact login --tool twine --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN }} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
           python setup.py sdist
-          twine upload dist/*
+          twine upload --repository codeartifact dist/*
