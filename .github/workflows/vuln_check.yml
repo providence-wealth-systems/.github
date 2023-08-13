@@ -54,6 +54,7 @@ jobs:
               --cveValidForHours 48
               --enableExperimental
         - name: Upload Test results
+          if: always()
           uses: actions/upload-artifact@master
           with:
             name: Dependency Check Report
