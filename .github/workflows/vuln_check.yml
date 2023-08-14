@@ -49,7 +49,7 @@ jobs:
               --failOnCVSS 7
               --cveValidForHours 48
               --enableExperimental
-              --suppression ["dependencyCheckSuppressions.xml",]
+              --suppression "dependencyCheckSuppressions.xml"
         - name: Upload Test results
           if: always()
           uses: actions/upload-artifact@master
