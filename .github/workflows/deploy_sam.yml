@@ -39,6 +39,6 @@ jobs:
       - name: Setup PIP for Code Artifact Access
         run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
       - name: Build AWS SAM Application
-        run: sam build --use-container -m requirements.txt
+        run: sam build -m requirements.txt
       - name: Deploy AWS SAM Application
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
