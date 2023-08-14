@@ -37,10 +37,6 @@ jobs:
           run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
         - name: Install Packages Into Local Folder
           run: pip install -r requirements.txt -t scan_dependencies
-        - name: Check contents/existenace of scan_dependencies folder
-          run: ls -alh scan_dependencies
-        - name: Check github.workspace/scan_dependencies
-          run: ls -alh ${{ github.workspace }}/scan_dependencies
         - name: Run Dependency Check
           uses: dependency-check/Dependency-Check_Action@main
           id: dependency_check
