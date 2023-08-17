@@ -18,9 +18,26 @@ jobs:
             github-pat: ${{ secrets.WORKFLOW_TOKEN }}
             exit-code: 1
             ignore-unfixed: true
+    determine_if_dependency_check_suppression_file_exists:
+      name: Determine If Dependency Check Suppression File Exists
+      runs-on: ubuntu-latest
+      if: github.ref == 'refs/heads/main'
+      outputs:
+        file_exists: ${{ steps.suppression_file_exists.outputs.exists }}
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v3
+          with:
+            token: ${{ secrets.WORKFLOW_TOKEN }}
+        - name: Check If Suppression File Exists
+          id: suppression_file_exists
+          uses: thebinaryfelix/check-file-existence-action@main
+          with:
+            files: 'dependencyCheckSuppressions.xml'
     dependency_check:
       name: Runs Dependency Check Against Libraries
       runs-on: ubuntu-latest
+      needs: [determine_if_dependency_check_suppression_file_exists]
       steps:
         - uses: aws-actions/configure-aws-credentials@v2
           with:
@@ -37,6 +54,12 @@ jobs:
           run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
         - name: Install Packages Into Local Folder
           run: pip install -r requirements.txt -t scan_dependencies
+        - name: Create Depdendency Check Argument String With Suppression File
+          if: ${{ needs.determine_if_dependency_check_suppression_file_exists.outputs.file_exists }} == 'true'
+          run: echo "DEPENDENCY_CHECK_ARG_STRING=--cveValidForHours 48 --enableExperimental --suppression dependencyCheckSuppressions.xml" >> $GITHUB_ENV
+        - name: Create Depdendency Check Argument String With No Suppression File
+          if: ${{ needs.determine_if_dependency_check_suppression_file_exists.outputs.file_exists }} == 'false'
+          run: echo "DEPENDENCY_CHECK_ARG_STRING=--cveValidForHours 48 --enableExperimental" >> $GITHUB_ENV
         - name: Run Dependency Check
           uses: dependency-check/Dependency-Check_Action@main
           id: dependency_check
@@ -45,10 +68,7 @@ jobs:
             path: 'scan_dependencies'
             format: 'HTML'
             out: 'reports'
-            args: >
-              --cveValidForHours 48
-              --enableExperimental
-              --suppression dependencyCheckSuppressions.xml
+            args: "$DEPENDENCY_CHECK_ARG_STRING"
         - name: Upload Test results
           if: always()
           uses: actions/upload-artifact@master
