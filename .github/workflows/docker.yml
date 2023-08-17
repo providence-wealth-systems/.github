@@ -17,10 +17,10 @@ jobs:
       - name: Set Repo Name To Lowercase
         run: echo REPO_NAME_LOWER_CASE="${REPO_NAME,,}" >> $GITHUB_ENV
       - name: Check if not main branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref != 'refs/heads/main'
         run: echo CONTAINER_NAME="$REPO_NAME_LOWER_CASE":"$VERSION"-${{ github.sha }} >> $GITHUB_ENV
       - name: Check if main branch
-        if: github.ref != 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         run: echo CONTAINER_NAME="$REPO_NAME_LOWER_CASE":"$VERSION" >> $GITHUB_ENV
       - name: Set Final Container Name
         id: final_output
