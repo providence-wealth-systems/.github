@@ -1,6 +1,9 @@
 name: Deploy Library To AWS Code Artifact
 on:
   workflow_call:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   determine_if_library:
     name: Determine If Library Repositry

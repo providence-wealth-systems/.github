@@ -1,6 +1,9 @@
 name: Continous Delivery Workflow
 on:
   workflow_call:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   deploy_sam:
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
