@@ -3,19 +3,19 @@ on:
   workflow_call:
 jobs:
   determine_if_aws_sam_application:
-    name: Deploy AWS SAM Application
+    name: Determine If AWS SAM Application Repository
     runs-on: ubuntu-latest
     continue-on-error: true
     if: github.ref == 'refs/heads/main'
     outputs:
-      file_exists: ${{ steps.is_aws_application.outputs.exists }}
+      file_exists: ${{ steps.is_aws_sam_application.outputs.exists }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Library
-        id: is_aws_application
+        id: is_aws_sam_application
         uses: thebinaryfelix/check-file-existence-action@main
         with:
           files: 'samconfig.toml'
