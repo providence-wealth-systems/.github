@@ -5,6 +5,7 @@ jobs:
   determine_if_aws_sam_application:
     name: Determine If AWS SAM Application
     runs-on: ubuntu-latest
+    continue-on-error: true
     if: github.ref == 'refs/heads/main'
     outputs:
       file_exists: ${{ steps.is_aws_application.outputs.exists }}
