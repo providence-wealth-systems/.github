@@ -21,7 +21,6 @@ jobs:
     determine_if_dependency_check_suppression_file_exists:
       name: Determine If Dependency Check Suppression File Exists
       runs-on: ubuntu-latest
-      if: github.ref == 'refs/heads/main'
       outputs:
         file_exists: ${{ steps.suppression_file_exists.outputs.exists }}
       steps:
