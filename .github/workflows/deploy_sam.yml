@@ -1,9 +1,6 @@
 name: Deploy AWS SAM Application
 on:
   workflow_call:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   determine_if_aws_sam_application:
     name: Determine If AWS SAM Application

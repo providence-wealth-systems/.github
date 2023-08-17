@@ -1,9 +1,6 @@
 name: Check For Secrets Workflow
 on:
   workflow_call:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   lint_with_black:
     name: Lint using Black

@@ -1,9 +1,6 @@
 name: Build & Publish Docker Image
 on:
   workflow_call:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   create_container_version:
     runs-on: ubuntu-latest

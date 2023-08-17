@@ -1,9 +1,6 @@
 name: Check For Vulnerabilities
 on:
   workflow_call:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
     trivy_vuln_check:
       name: Run AquaSecurity Trivy Scan On Files (Vulnerabilities)
