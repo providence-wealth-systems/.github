@@ -56,10 +56,10 @@ jobs:
         - name: Install Packages Into Local Folder
           run: pip install -r requirements.txt -t scan_dependencies
         - name: Create Depdendency Check Argument String With Suppression File
-          if: ${{ always() && !contains(needs.determine_if_dependency_check_suppression_file_exists.result, 'failure') }}
+          if: ${{ always() && needs.determine_if_dependency_check_suppression_file_exists.outputs.file_exists == 'true' }}
           run: echo "DEPENDENCY_CHECK_ARG_STRING=--cveValidForHours 48 --enableExperimental --suppression dependencyCheckSuppressions.xml" >> $GITHUB_ENV
         - name: Create Depdendency Check Argument String With No Suppression File
-          if: ${{ always() && contains(needs.determine_if_dependency_check_suppression_file_exists.result, 'failure') }}
+          if: ${{ always() && needs.determine_if_dependency_check_suppression_file_exists.outputs.file_exists == 'false' }}
           run: echo "DEPENDENCY_CHECK_ARG_STRING=--cveValidForHours 48 --enableExperimental" >> $GITHUB_ENV
         - name: Run Dependency Check
           uses: dependency-check/Dependency-Check_Action@main
