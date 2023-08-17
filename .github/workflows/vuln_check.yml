@@ -37,6 +37,7 @@ jobs:
       name: Runs Dependency Check Against Libraries
       runs-on: ubuntu-latest
       needs: [determine_if_dependency_check_suppression_file_exists]
+      if: always()
       steps:
         - uses: aws-actions/configure-aws-credentials@v2
           with:
