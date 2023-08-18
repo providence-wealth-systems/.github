@@ -25,12 +25,6 @@ jobs:
     needs: determine_if_aws_sam_application
     if: ${{ needs.determine_if_aws_sam_application.outputs.file_exists }} == 'true'
     steps:
-      - name: Create Deployment Event
-        uses: chrnorm/deployment-action@main
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: 'https://${{ github.event.repository.name }}'
-          environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -52,20 +46,4 @@ jobs:
       - name: Build AWS SAM Application
         run: sam build -m requirements.txt
       - name: Deploy AWS SAM Application
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
-      - name: Update deployment status (success)
-        if: success()
-        uses: chrnorm/deployment-status@main
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: 'https://${{ github.event.repository.name }}'
-          deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
-          state: 'success'
-      - name: Update deployment status (success)
-        if: failure()
-        uses: chrnorm/deployment-status@main
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: 'https://${{ github.event.repository.name }}'
-          deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
-          state: 'failure'
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-
