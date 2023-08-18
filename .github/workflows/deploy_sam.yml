@@ -26,7 +26,7 @@ jobs:
     if: ${{ needs.determine_if_aws_sam_application.outputs.file_exists }} == 'true'
     steps:
       - name: Create Deployment Event
-        uses: chrnorm/deployment-action@v2
+        uses: chrnorm/deployment-action@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: ${{ github.event.repository.name }}
@@ -55,7 +55,7 @@ jobs:
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
       - name: Update deployment status (success)
         if: success()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: ${{ github.event.repository.name }}
@@ -63,7 +63,7 @@ jobs:
           state: 'success'
       - name: Update deployment status (success)
         if: failure()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: ${{ github.event.repository.name }}
