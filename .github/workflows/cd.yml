@@ -1,6 +1,8 @@
 name: Continous Delivery Workflow
 on:
   workflow_call:
+permissions:
+  deployments: write
 jobs:
   deploy_sam:
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
