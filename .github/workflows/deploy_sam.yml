@@ -29,7 +29,7 @@ jobs:
         uses: chrnorm/deployment-action@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
+          environment-url: 'https://${{ github.event.repository.name }}'
           environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
       - name: Checkout code
         uses: actions/checkout@v3
@@ -58,7 +58,7 @@ jobs:
         uses: chrnorm/deployment-status@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
+          environment-url: 'https://${{ github.event.repository.name }}'
           deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
           state: 'success'
       - name: Update deployment status (success)
@@ -66,6 +66,6 @@ jobs:
         uses: chrnorm/deployment-status@main
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
+          environment-url: 'https://${{ github.event.repository.name }}'
           deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
           state: 'failure'
