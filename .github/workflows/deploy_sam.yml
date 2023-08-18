@@ -46,4 +46,4 @@ jobs:
       - name: Build AWS SAM Application
         run: sam build -m requirements.txt
       - name: Deploy AWS SAM Application
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
