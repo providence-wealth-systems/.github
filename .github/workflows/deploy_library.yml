@@ -25,12 +25,6 @@ jobs:
     needs: determine_if_library
     if: ${{ needs.determine_if_library.outputs.file_exists }} == 'true'
     steps:
-      - name: Create Deployment Event
-        uses: chrnorm/deployment-action@v2
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
-          environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -54,20 +48,4 @@ jobs:
           aws codeartifact login --tool twine --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN }} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
           python setup.py sdist
           twine upload --repository codeartifact dist/*
-      - name: Update deployment status (success)
-        if: success()
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
-          deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
-          state: 'success'
-      - name: Update deployment status (success)
-        if: failure()
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: ${{ github.event.repository.name }}
-          deployment-id: ${{ github.ref == 'refs/heads/main' && 'production' || 'stage'}}
-          state: 'failure'
 
