@@ -2,48 +2,48 @@ name: Deploy AWS SAM Application
 on:
   workflow_call:
 jobs:
-  determine_if_aws_sam_application:
-    name: Determine If AWS SAM Application Repository
+  deploy:
+    name: Deploy To AWS
     runs-on: ubuntu-latest
-    continue-on-error: true
+    environment: ${{ github.ref }}
     if: github.ref == 'refs/heads/main'
-    outputs:
-      file_exists: ${{ steps.is_aws_sam_application.outputs.exists }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
+
       - name: Check If Library
         id: is_aws_sam_application
+        continue-on-error: true
         uses: thebinaryfelix/check-file-existence-action@main
         with:
           files: 'samconfig.toml'
-  deploy_sam_application:
-    name: Deploy AWS SAM Application
-    runs-on: ubuntu-latest
-    needs: determine_if_aws_sam_application
-    if: ${{ needs.determine_if_aws_sam_application.outputs.file_exists }} == 'true'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
-      - uses: aws-actions/setup-sam@v2
+      
+      - name: Setup AWS SAM Credentials
+        if: ${{ steps.is_aws_sam_application.outputs.exists }} == 'true'
+        uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
-      - uses: aws-actions/configure-aws-credentials@v2
+
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Set up Python Environment
+
+      - name: Setup Python Environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Setup PIP for Code Artifact Access
+
+      - name: Setup CodeArtifact Access Credentials
         run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
+
       - name: Build AWS SAM Application
         run: sam build -m requirements.txt
+      
       - name: Deploy AWS SAM Application
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
