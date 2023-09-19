@@ -15,9 +15,9 @@ jobs:
       - name: Environment
         id: set_environment
         run: |
-            if [[ "${{ github.base_ref }}" == "main" || "${{ github.ref }}" == "refs/head/main" ]]; then
-                echo ENVIRONMENT=Production >> $GITHUB_OUTPUT
+            if [[ $GITHUB_REF == "refs/head/main" ]]; then
+                echo "ENVIRONMENT=Production" >> $GITHUB_OUTPUT
             fi
-            if [[ "${{ github.base_ref }}" == "staging" || "${{ github.ref }}" == "refs/head/stafing "]]; then
-                echo ENVIRONMENT=Staging >> $GITHUB_OUTPUT
+            if [[ $GITHUB_REF == "refs/head/staging" ]]; then
+                echo "ENVIRONMENT=Staging" >> $GITHUB_OUTPUT
             fi
