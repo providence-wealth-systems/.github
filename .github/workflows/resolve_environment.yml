@@ -21,3 +21,5 @@ jobs:
             if [[ $GITHUB_REF == "refs/head/staging" ]]; then
                 echo "ENVIRONMENT=Staging" >> $GITHUB_OUTPUT
             fi
+      - name: What is Environment?
+        run: echo "${{ steps.set_environment.outputs.ENVIRONMENT }}"
