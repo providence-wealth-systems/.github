@@ -6,7 +6,7 @@ jobs:
     name: Figure out deployment environmnet
     runs-on: ubuntu-latest
     outputs:
-        environment: ${{ steps.set_environment.outputs.ENVIRONMENT }}
+        ENVIRONMENT: ${{ steps.set_environment.outputs.ENVIRONMENT }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -15,11 +15,11 @@ jobs:
       - name: Environment
         id: set_environment
         run: |
-            if [[ $GITHUB_REF == "refs/head/main" ]]; then
-                echo "ENVIRONMENT=Production" >> $GITHUB_OUTPUT
+            if [[ $GITHUB_REF == 'refs/head/main' ]]; then
+                echo ENVIRONMENT=Production >> $GITHUB_OUTPUT
             fi
-            if [[ $GITHUB_REF == "refs/head/staging" ]]; then
-                echo "ENVIRONMENT=Staging" >> $GITHUB_OUTPUT
+            if [[ $GITHUB_REF == 'refs/head/staging' ]]; then
+                echo ENVIRONMENT=Staging >> $GITHUB_OUTPUT
             fi
       - name: What is Environment?
         run: echo "${{ steps.set_environment.outputs.ENVIRONMENT }}"
