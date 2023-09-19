@@ -1,0 +1,23 @@
+name: Resolve Deployment Environmnet
+on:
+  workflow_call:
+jobs:
+  resolve_environment:
+    name: Figure out deployment environmnet
+    runs-on: ubuntu-latest
+    outputs:
+        environment: ${{ steps.set_environment.outputs.ENVIRONMENT }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Environment
+        id: set_environment
+        run: |
+            if [[ "${{ github.base_ref }}" == "main" || "${{ github.ref }}" == "refs/head/main" ]]; then
+                echo ENVIRONMENT=Production >> $GITHUB_OUTPUT
+            fi
+            if [[ "${{ github.base_ref }}" == "staging" || "${{ github.ref }}" == "refs/head/stafing "]]; then
+                echo ENVIRONMENT=Staging >> $GITHUB_OUTPUT
+            fi
