@@ -15,10 +15,10 @@ jobs:
       - name: Environment
         id: set_environment
         run: |
-            if [[ $GITHUB_REF == 'refs/head/main' ]]; then
+            if [[ "$GITHUB_REF" == 'refs/head/main' ]]; then
                 echo ENVIRONMENT=Production >> $GITHUB_OUTPUT
             fi
-            if [[ $GITHUB_REF == 'refs/head/staging' ]]; then
+            if [[ "$GITHUB_REF" == 'refs/head/staging' ]]; then
                 echo ENVIRONMENT=Staging >> $GITHUB_OUTPUT
             fi
       - name: What is Environment?
