@@ -5,13 +5,10 @@ jobs:
   deploy:
     name: Deploy To AWS
     runs-on: ubuntu-latest
-    environment: ${{ needs.resolve_environment.outputs.ENVIRONMENT }}
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
     steps:
-      - name: What is Environment?
-        run: echo "${{ needs.resolve_environment.outputs.ENVIRONMENT }}"
-
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
