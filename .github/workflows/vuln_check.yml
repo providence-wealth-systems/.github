@@ -42,8 +42,8 @@ jobs:
       steps:
         - uses: aws-actions/configure-aws-credentials@v2
           with:
-            aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID || secrets.AWS_ACCESS_KEY_ID_STAGE }}
-            aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+            aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
+            aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
             aws-region: us-east-1
         - name: Checkout Code
           uses: actions/checkout@v3
