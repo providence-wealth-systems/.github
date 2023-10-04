@@ -34,6 +34,12 @@ jobs:
           aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
           aws-region: us-east-1
 
+      - name: Setup Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
       - name: Setup CodeArtifact Access Credentials
         run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
 
