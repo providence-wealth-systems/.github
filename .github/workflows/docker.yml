@@ -72,5 +72,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: PIP_INDEX_URL=$PIP_INDEX_URL
-          tags: providencewealth/$CONTAINER_NAME
+          build-args: PIP_INDEX_URL=${{ env.PIP_INDEX_URL }}
+          tags: providencewealth/${{ env.CONTAINER_NAME }}
