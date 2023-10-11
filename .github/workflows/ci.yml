@@ -13,7 +13,7 @@ jobs:
     needs: check_for_secrets
     secrets: inherit
   run_tests:
-    uses: providence-wealth-systems/.github/.github/workflows/pytest.yml@main
+    uses: providence-wealth-systems/.github/.github/workflows/tests.yml@main
     needs: lint_code
     secrets: inherit
   vuln_check:

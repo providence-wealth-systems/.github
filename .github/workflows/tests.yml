@@ -1,0 +1,64 @@
+name: Run Tests
+on:
+    workflow_call:
+jobs:
+  determine_if_python:
+    name: Determine If Python Repository
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_python.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Python
+        id: is_python
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'app/main.py'
+  determine_if_js:
+    name: Determine If Javascript Repository
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_js.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Javascript
+        id: is_js
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'package.json'
+  run_pytest:
+    name: Run Tests with PyTest
+    runs-on: ubuntu-latest
+    if: ${{ needs.determine_if_python.outputs.file_exists }} == 'true'
+    steps:
+    - uses: aws-actions/setup-sam@v2
+    - uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
+        aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+        aws-region: us-east-1
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.WORKFLOW_TOKEN }}
+    - name: Set up Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+    - name: Install PIP Dependencies
+      run: |
+        aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        pip install -r test-requirements.txt
+        pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
