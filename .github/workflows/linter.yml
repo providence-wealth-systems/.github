@@ -6,7 +6,6 @@ jobs:
     name: Determine If Python Repository
     runs-on: ubuntu-latest
     continue-on-error: true
-    if: github.ref == 'refs/heads/main'
     outputs:
       file_exists: ${{ steps.is_python.outputs.exists }}
     steps:
@@ -23,7 +22,6 @@ jobs:
     name: Determine If Javascript Repository
     runs-on: ubuntu-latest
     continue-on-error: true
-    if: github.ref == 'refs/heads/main'
     outputs:
       file_exists: ${{ steps.is_js.outputs.exists }}
     steps:
