@@ -84,7 +84,3 @@ jobs:
         with:
           prettier: true
           eslint: true
-          body: |
-            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
-            uses the [Prettier](https://prettier.io/) and [ESLint](https://eslint.org) formatters to fix these issues.
-          base: ${{ github.head_ref }}
