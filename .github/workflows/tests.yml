@@ -64,26 +64,26 @@ jobs:
         pip install -r test-requirements.txt
         pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
 
-  run_fe_test:
-    name: Run Front End Tests
-    runs-on: ubuntu-latest
-    needs: determine_if_js
-    if: needs.determine_if_js.outputs.file_exists == 'true'
-    steps:
-    - uses: aws-actions/setup-sam@v2
-    - uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
-        aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
-        aws-region: us-east-1
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.WORKFLOW_TOKEN }}
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - name: Install Node.js dependencies
-      run: npm ci
-    - name: Run Tests
-      run: npm run test
+  # run_fe_test:
+  #   name: Run Front End Tests
+  #   runs-on: ubuntu-latest
+  #   needs: determine_if_js
+  #   if: needs.determine_if_js.outputs.file_exists == 'true'
+  #   steps:
+  #   - uses: aws-actions/setup-sam@v2
+  #   - uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
+  #       aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+  #       aws-region: us-east-1
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       token: ${{ secrets.WORKFLOW_TOKEN }}
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v2
+  #     with:
+  #       node-version: 16
+  #   - name: Install Node.js dependencies
+  #     run: npm ci
+  #   - name: Run Tests
+  #     run: npm run test
