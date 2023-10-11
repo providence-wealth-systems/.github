@@ -63,6 +63,7 @@ jobs:
       run: |
         pip install -r test-requirements.txt
         pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
+
   run_fe_test:
     name: Run Front End Tests
     runs-on: ubuntu-latest
