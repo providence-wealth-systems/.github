@@ -64,7 +64,7 @@ jobs:
   lint_front_end:
     name: Lint using Prettier and ESLint
     runs-on: ubuntu-latest
-    need: determine_if_js
+    needs: determine_if_js
     if: ${{ needs.determine_if_js.outputs.file_exists }} == 'true'
     steps:
       - name: Checkout Code
