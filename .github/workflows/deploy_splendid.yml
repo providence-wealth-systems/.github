@@ -1,0 +1,53 @@
+name: Deploy Next.js "Splendid" app to S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  determine_if_js:
+      name: Determine If Javascript Repository
+      runs-on: ubuntu-latest
+      continue-on-error: true
+      if: github.ref == 'refs/heads/main'
+      outputs:
+        file_exists: ${{ steps.is_js.outputs.exists }}
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v3
+          with:
+            token: ${{ secrets.WORKFLOW_TOKEN }}
+        - name: Check If Javascript
+          id: is_js
+          uses: thebinaryfelix/check-file-existence-action@main
+          with:
+            files: 'package.json'
+  build-and-deploy:
+    if: ${{ needs.determine_if_js.outputs.file_exists }} == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
+          aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+          aws-region: us-east-1
+
+      - name: Sync build artifact to S3
+        run: aws s3 sync out s3://pws-splendid/

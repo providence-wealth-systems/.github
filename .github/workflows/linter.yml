@@ -1,0 +1,92 @@
+name: Linter Workflow
+on:
+  workflow_call:
+jobs:
+  determine_if_python:
+    name: Determine If Python Repository
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      file_exists: ${{ steps.is_python.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Python
+        id: is_python
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'app/main.py'
+  determine_if_js:
+    name: Determine If Javascript Repository
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      file_exists: ${{ steps.is_js.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Javascript
+        id: is_js
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'package.json'
+  lint_with_black:
+    name: Lint using Black
+    runs-on: ubuntu-latest
+    if: ${{ needs.determine_if_python.outputs.file_exists }} == 'true'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Run Black Against Code
+        uses: rickstaa/action-black@v1
+        id: action_black
+        with:
+            black_args: "."
+      - name: Create Pull Request
+        if: steps.action_black.outputs.is_formatted == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          title: "Black Linter Formatting Changes from psf/black check"
+          commit-message: ":art: Automated Black Linting Changes"
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
+          base: ${{ github.head_ref }}
+          branch: actions/black
+  lint_front_end:
+    name: Lint using Prettier and ESLint
+    runs-on: ubuntu-latest
+    needs: determine_if_js
+    continue-on-error: false
+    if: ${{ needs.determine_if_js.outputs.file_exists }} == 'true'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          prettier: true
+          eslint: true
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [Prettier](https://prettier.io/) and [ESLint](https://eslint.org) formatters to fix these issues.
+          base: ${{ github.head_ref }}

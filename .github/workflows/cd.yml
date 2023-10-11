@@ -5,3 +5,6 @@ jobs:
   deploy_sam:
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
     secrets: inherit
+  deploy_s3:
+    uses: providence-wealth-systems/.github/.github/workflows/deploy_splendid.yml@main
+    secrets: inherit
