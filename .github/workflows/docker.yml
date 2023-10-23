@@ -35,8 +35,6 @@ jobs:
         with:
           files: 'package.json'
   determine_if_dockerized_repository:
-    needs: determine_if_python
-    if: needs.determine_if_python.outputs.file_exists == 'true'
     name: Check if Dockerfile Exists
     runs-on: ubuntu-latest
     continue-on-error: true
