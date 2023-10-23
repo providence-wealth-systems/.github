@@ -128,6 +128,8 @@ jobs:
           node-version: 16
       - name: Create local scan_dependencies Folder
         run: mkdir scan_dependencies
+      - name: Install Node.js dependencies
+        run: npm ci
       - name: Build NPM Packages
         run: npm run build
       - name: Prune Packages
