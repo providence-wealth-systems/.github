@@ -6,24 +6,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  determine_if_js:
-      name: Determine If Javascript Repository
-      runs-on: ubuntu-latest
-      continue-on-error: true
-      outputs:
-        file_exists: ${{ steps.is_js.outputs.exists }}
-      steps:
-        - name: Checkout Code
-          uses: actions/checkout@v3
-          with:
-            token: ${{ secrets.WORKFLOW_TOKEN }}
-        - name: Check If Javascript
-          id: is_js
-          uses: thebinaryfelix/check-file-existence-action@main
-          with:
-            files: 'package.json'
   build-and-deploy:
-    if: ${{ needs.determine_if_js.outputs.file_exists }} == 'true'
     runs-on: ubuntu-latest
 
     steps:
