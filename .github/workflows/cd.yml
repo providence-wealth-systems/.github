@@ -2,9 +2,43 @@ name: Continous Delivery Workflow
 on:
   workflow_call:
 jobs:
+  determine_if_sam:
+    name: Determine If SAM Application
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_sam.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If SAM Application
+        id: is_sam
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'template.yaml'
+  determine_if_nextjs:
+    name: Determine If Next.js Application
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_nextjs_app.outputs.exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Next.js Application
+        id: is_nextjs_app
+        uses: thebinaryfelix/check-file-existence-action@main
+        with:
+          files: 'next.config.js'
   deploy_sam:
+    needs: determine_if_sam
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
     secrets: inherit
   deploy_s3:
+    needs: determine_if_nextjs
     uses: providence-wealth-systems/.github/.github/workflows/deploy_splendid.yml@main
     secrets: inherit
