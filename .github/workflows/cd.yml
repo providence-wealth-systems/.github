@@ -35,10 +35,10 @@ jobs:
         with:
           files: 'next.config.js'
   deploy_sam:
-    needs: determine_if_sam
+    if: determine_if_sam.outputs.file_exists == 'true'
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
     secrets: inherit
   deploy_s3:
-    needs: determine_if_nextjs
+    if: determine_if_nextjs.outputs.file_exists == 'true'
     uses: providence-wealth-systems/.github/.github/workflows/deploy_splendid.yml@main
     secrets: inherit
