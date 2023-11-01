@@ -88,7 +88,7 @@ jobs:
         with:
             token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Get Application Version from app/config_default.yaml
-        run: echo """VERSION=$(jq -r '.version' package.json)""" >> $GITHUB_ENV
+        run: echo VERSION=$(jq -r .version package.json) >> $GITHUB_ENV
       - name: Set Repo Name To Lowercase
         run: echo REPO_NAME_LOWER_CASE="${REPO_NAME,,}" >> $GITHUB_ENV
       - name: Check if not main branch
