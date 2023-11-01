@@ -111,7 +111,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: Dependency Check Report
-          path: ${{github.workspace}}/
+          path: ${{github.workspace}}/reports
   dependency_check_js:
     name: Runs Dependency Check Against Libraries (JavaScript)
     runs-on: ubuntu-latest
