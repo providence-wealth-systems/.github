@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If SAM Application
         id: is_sam
-        uses: thebinaryfelix/check-file-existence-action@main
+        uses: andstor/file-existence-action@v2
         with:
           files: 'template.yaml'
   determine_if_nextjs:
@@ -31,7 +31,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Next.js Application
         id: is_nextjs_app
-        uses: thebinaryfelix/check-file-existence-action@main
+        uses: andstor/file-existence-action@v2
         with:
           files: 'next.config.js'
   deploy_sam:

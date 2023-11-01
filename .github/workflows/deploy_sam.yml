@@ -17,7 +17,7 @@ jobs:
       - name: Check If Library
         id: is_aws_sam_application
         continue-on-error: true
-        uses: thebinaryfelix/check-file-existence-action@main
+        uses: andstor/file-existence-action@v2
         with:
           files: 'samconfig.toml'
       

@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Python
         id: is_python
-        uses: thebinaryfelix/check-file-existence-action@main
+        uses: andstor/file-existence-action@v2
         with:
           files: 'app/main.py'
   determine_if_js:
@@ -31,7 +31,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Javascript
         id: is_js
-        uses: thebinaryfelix/check-file-existence-action@main
+        uses: andstor/file-existence-action@v2
         with:
           files: 'package.json'
   run_pytest:
