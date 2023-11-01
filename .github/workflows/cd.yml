@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     outputs:
-      file_exists: ${{ steps.is_sam.outputs.exists }}
+      file_exists: ${{ steps.is_sam.outputs.files_exists }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     outputs:
-      file_exists: ${{ steps.is_nextjs_app.outputs.exists }}
+      file_exists: ${{ steps.is_nextjs_app.outputs.files_exists }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
