@@ -104,6 +104,14 @@ jobs:
     name: Build & Publish Dockerfile (Python)
     needs: create_container_version_python
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_python.outputs.CONTAINER_NAME }}
     steps:
@@ -127,7 +135,7 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
           push: true
           build-args: PIP_INDEX_URL=${{ env.PIP_INDEX_URL }}
           tags: providencewealth/${{ env.CONTAINER_NAME }}
