@@ -34,6 +34,22 @@ jobs:
         uses: andstor/file-existence-action@v2
         with:
           files: 'next.config.js'
+  determine_if_library:
+    name: Determine If Library
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_library.outputs.files_exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Next.js Application
+        id: is_library
+        uses: andstor/file-existence-action@v2
+        with:
+          files: 'setup.py'
   deploy_sam:
     needs: determine_if_sam
     if: needs.determine_if_sam.outputs.file_exists == 'true'
@@ -43,4 +59,9 @@ jobs:
     needs: determine_if_nextjs
     if: needs.determine_if_nextjs.outputs.file_exists == 'true'
     uses: providence-wealth-systems/.github/.github/workflows/deploy_splendid.yml@main
+    secrets: inherit
+  deploy_library:
+    needs: determine_if_library
+    if: needs.determine_if_library.outputs.file_exists == 'true'
+    uses: providence-wealth-systems/.github/.github/workflows/deploy_library.yml@main
     secrets: inherit
