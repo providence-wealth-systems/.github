@@ -33,7 +33,23 @@ jobs:
         id: is_nextjs_app
         uses: andstor/file-existence-action@v2
         with:
-          files: 'next.config.js'
+          files: 'pages/assumptions.js'
+  determine_if_everest:
+    name: Determine If Everest FE Application
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      file_exists: ${{ steps.is_everest_app.outputs.files_exists }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Check If Everest FE Application
+        id: is_everest_app
+        uses: andstor/file-existence-action@v2
+        with:
+          files: 'pages/_app.tsx'
   determine_if_library:
     name: Determine If Library
     runs-on: ubuntu-latest
