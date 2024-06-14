@@ -1,6 +1,13 @@
 name: Run PyTest
 on:
     workflow_call:
+env:
+  TradRunEndpoint: https://kgjs86w049.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  TradRunEndpointInfo: https://kgjs86w049.execute-api.us-east-1.amazonaws.com/Prod/info
+  PwsRunEndpoint: https://y92yibx7j2.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  PwsRunEndpointInfo: https://y92yibx7j2.execute-api.us-east-1.amazonaws.com/Prod/info
+  EndowmentRunEndpoint: https://09kg0pclgb.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  EndowmentRunEndpointInfo: https://09kg0pclgb.execute-api.us-east-1.amazonaws.com/Prod/info
 jobs:
   run_pytest:
     name: Run Tests with PyTest
