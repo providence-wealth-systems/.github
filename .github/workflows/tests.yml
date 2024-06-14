@@ -1,6 +1,13 @@
 name: Run Tests
 on:
     workflow_call:
+env:
+  TradRunEndpoint: https://kgjs86w049.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  TradRunEndpointInfo: https://kgjs86w049.execute-api.us-east-1.amazonaws.com/Prod/info
+  PwsRunEndpoint: https://y92yibx7j2.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  PwsRunEndpointInfo: https://y92yibx7j2.execute-api.us-east-1.amazonaws.com/Prod/info
+  EndowmentRunEndpoint: https://09kg0pclgb.execute-api.us-east-1.amazonaws.com/Prod/api/latest/get_data
+  EndowmentRunEndpointInfo: https://09kg0pclgb.execute-api.us-east-1.amazonaws.com/Prod/info
 jobs:
   determine_if_python:
     name: Determine If Python Repository
@@ -59,6 +66,14 @@ jobs:
         aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Set ENV Variables
+      run: |
+        echo "TradRunEndpoint=${{ env.TradRunEndpoint }}" >> $GITHUB_ENV
+        echo "TradRunEndpointInfo=${{ env.TradRunEndpointInfo }}" >> $GITHUB_ENV
+        echo "PwsRunEndpoint=${{ env.PwsRunEndpoint }}" >> $GITHUB_ENV
+        echo "PwsRunEndpointInfo=${{ env.PwsRunEndpointInfo }}" >> $GITHUB_ENV
+        echo "EndowmentRunEndpoint=${{ env.EndowmentRunEndpoint }}" >> $GITHUB_ENV
+        echo "EndowmentRunEndpointInfo=${{ env.EndowmentRunEndpointInfo }}" >> $GITHUB_ENV
     - name: Run Tests
       run: |
         pip install -r test-requirements.txt
