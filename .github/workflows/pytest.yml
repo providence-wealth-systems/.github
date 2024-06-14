@@ -32,6 +32,14 @@ jobs:
         aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Set ENV Variables
+      run: |
+        echo "TradRunEndpoint=${{ env.TradRunEndpoint }}" >> $GITHUB_ENV
+        echo "TradRunEndpointInfo=${{ env.TradRunEndpointInfo }}" >> $GITHUB_ENV
+        echo "PwsRunEndpoint=${{ env.PwsRunEndpoint }}" >> $GITHUB_ENV
+        echo "PwsRunEndpointInfo=${{ env.PwsRunEndpointInfo }}" >> $GITHUB_ENV
+        echo "EndowmentRunEndpoint=${{ env.EndowmentRunEndpoint }}" >> $GITHUB_ENV
+        echo "EndowmentRunEndpointInfo=${{ env.EndowmentRunEndpointInfo }}" >> $GITHUB_ENV
     - name: Run Tests
       run: |
         pip install -r test-requirements.txt
