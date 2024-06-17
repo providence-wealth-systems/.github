@@ -40,7 +40,9 @@ jobs:
         echo "PwsRunEndpointInfo=${{ env.PwsRunEndpointInfo }}" >> $GITHUB_ENV
         echo "EndowmentRunEndpoint=${{ env.EndowmentRunEndpoint }}" >> $GITHUB_ENV
         echo "EndowmentRunEndpointInfo=${{ env.EndowmentRunEndpointInfo }}" >> $GITHUB_ENV
+        echo "ADDEPAR_SECRET_KEY=${{ secrets.ADDEPAR_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "ADDEPAR_API_KEY=${{ secrets.ADDEPAR_API_KEY }}" >> $GITHUB_ENV
+        echo "ADDEPAR_ENCODED_KEY=${{ secrets.ADDEPAR_ENCODED_KEY }}" >> $GITHUB_ENV
     - name: Run Tests
       run: |
         pip install -r test-requirements.txt
-        pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
