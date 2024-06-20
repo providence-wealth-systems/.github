@@ -104,12 +104,6 @@ jobs:
     name: Build & Publish Dockerfile (Python)
     needs: create_container_version_python
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_python.outputs.CONTAINER_NAME }}
     steps:
@@ -141,12 +135,6 @@ jobs:
     name: Build & Publish Dockerfile (JavaScript)
     needs: create_container_version_js
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_js.outputs.CONTAINER_NAME }}
     steps:
