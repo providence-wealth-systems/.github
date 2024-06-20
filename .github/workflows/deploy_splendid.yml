@@ -35,11 +35,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set ENV Variables
+        run: |
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          echo "CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}" >> $GITHUB_ENV
+
       - name: Build application
         run: npm run build
-        env:
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
