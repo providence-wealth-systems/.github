@@ -130,6 +130,10 @@ jobs:
         run: mkdir scan_dependencies
       - name: Install Node.js dependencies
         run: npm ci
+      - name: Set ENV Variables
+        run: |
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> $GITHUB_ENV
       - name: Build NPM Packages
         run: npm run build
       - name: Prune Packages
