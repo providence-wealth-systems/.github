@@ -10,12 +10,12 @@ jobs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Python
         id: is_python
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'app/main.py'
   determine_if_js:
@@ -26,12 +26,12 @@ jobs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Javascript
         id: is_js
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'package.json'
   lint_with_black:
@@ -41,7 +41,7 @@ jobs:
     if: needs.determine_if_python.outputs.file_exists == 'true'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Run Black Against Code
@@ -68,7 +68,7 @@ jobs:
     if: needs.determine_if_js.outputs.file_exists == 'true'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Set up Node.js

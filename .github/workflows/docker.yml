@@ -10,12 +10,12 @@ jobs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Python
         id: is_python
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'app/main.py'
   determine_if_js:
@@ -26,12 +26,12 @@ jobs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Javascript
         id: is_js
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'package.json'
   determine_if_dockerized_repository:
@@ -42,12 +42,12 @@ jobs:
       file_exists: ${{ steps.is_dockerized_repo.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check if Dockerfile exists
         id: is_dockerized_repo
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'Dockerfile'
   create_container_version_python:
@@ -59,7 +59,7 @@ jobs:
     outputs:
       CONTAINER_NAME: ${{ steps.final_output.outputs.CONTAINER_NAME }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Get Application Version from app/config_default.yaml
@@ -84,7 +84,7 @@ jobs:
     outputs:
       CONTAINER_NAME: ${{ steps.final_output.outputs.CONTAINER_NAME }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Get Application Version from app/config_default.yaml
@@ -108,12 +108,12 @@ jobs:
       CONTAINER_NAME: ${{ needs.create_container_version_python.outputs.CONTAINER_NAME }}
     steps:
       - uses: aws-actions/setup-sam@v2
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
           aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
           aws-region: us-east-1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             token: ${{ secrets.WORKFLOW_TOKEN }}
       - uses: docker/setup-qemu-action@v3
@@ -138,7 +138,7 @@ jobs:
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_js.outputs.CONTAINER_NAME }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - uses: docker/setup-qemu-action@v3

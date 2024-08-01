@@ -10,12 +10,12 @@ jobs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Python
         id: is_python
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'app/main.py'
   determine_if_js:
@@ -26,12 +26,12 @@ jobs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Javascript
         id: is_js
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'package.json'
   trivy_vuln_check:
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Run Trivy Vulnerability Scan
@@ -58,12 +58,12 @@ jobs:
       file_exists: ${{ steps.suppression_file_exists.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Suppression File Exists
         id: suppression_file_exists
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'dependencyCheckSuppressions.xml'
   dependency_check_python:
@@ -72,17 +72,17 @@ jobs:
     needs: [determine_if_dependency_check_suppression_file_exists, determine_if_python]
     if: ${{ always() && needs.determine_if_python.outputs.file_exists == 'true' }}
     steps:
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
           aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
           aws-region: us-east-1
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Set up Python Environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - name: Create local scan_dependencies Folder
@@ -119,7 +119,7 @@ jobs:
     if: ${{ always() && needs.determine_if_js.outputs.file_exists == 'true' }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Set up Node.js

@@ -11,12 +11,12 @@ jobs:
       file_exists: ${{ steps.is_library.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Library
         id: is_library
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'setup.py'
   publish_artifact:
@@ -26,11 +26,11 @@ jobs:
     if: ${{ needs.determine_if_library.outputs.file_exists }} == 'true'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Setup Python Envirnoment  
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - name: Install dependencies
@@ -38,7 +38,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
       - uses: aws-actions/setup-sam@v2
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
           aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}

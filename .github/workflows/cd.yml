@@ -10,12 +10,12 @@ jobs:
       file_exists: ${{ steps.is_sam.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If SAM Application
         id: is_sam
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'template.yaml'
   determine_if_nextjs:
@@ -26,12 +26,12 @@ jobs:
       file_exists: ${{ steps.is_nextjs_app.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Next.js Application
         id: is_nextjs_app
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'pages/assumptions.js'
   determine_if_everest:
@@ -42,12 +42,12 @@ jobs:
       file_exists: ${{ steps.is_everest_app.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Everest FE Application
         id: is_everest_app
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'pages/_app.tsx'
   determine_if_library:
@@ -58,12 +58,12 @@ jobs:
       file_exists: ${{ steps.is_library.outputs.files_exists }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Check If Next.js Application
         id: is_library
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: 'setup.py'
   deploy_sam:
