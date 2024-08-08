@@ -27,6 +27,7 @@ jobs:
           echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_PROD }} >> $GITHUB_ENV
           echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_PROD }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_PROD }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_PROD }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_PROD }} >> $GITHUB_ENV
@@ -39,6 +40,7 @@ jobs:
           echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_STAGE }} >> $GITHUB_ENV
           echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_STAGE }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_STAGE }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_STAGE }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_STAGE }} >> $GITHUB_ENV
@@ -51,6 +53,7 @@ jobs:
           echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_DEV }} >> $GITHUB_ENV
           echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_DEV }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_DEV }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_DEV }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_DEV }} >> $GITHUB_ENV
@@ -83,4 +86,4 @@ jobs:
         run: sam build -m requirements.txt
       
       - name: Deploy AWS SAM Application
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=${{ env.AWS_SAM_PARAMETER_ENVIRONMENT }} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }}
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=${{ env.AWS_SAM_PARAMETER_ENVIRONMENT }} BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }}
