@@ -1,0 +1,101 @@
+name: Deploy Containerized Lambda Code
+on:
+  workflow_call:
+jobs:
+  deploy:
+    name: Deploy To AWS
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/dev'
+    environment: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - name: Check If Library
+        id: is_aws_sam_application
+        continue-on-error: true
+        uses: andstor/file-existence-action@v3
+        with:
+          files: 'template.yaml'
+
+      - name: Check If Main Branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_PROD }} >> $GITHUB_ENV
+          echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_PROD }} >> $GITHUB_ENV
+
+      - name: Check If Staging Branch
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_STAGE }} >> $GITHUB_ENV
+          echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_STAGE }} >> $GITHUB_ENV
+
+      - name: Check If Dev Branch
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          echo AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_DEV }} >> $GITHUB_ENV
+          echo AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ENVIRONMENT=${{ vars.AWS_SAM_PARAMETER_ENVIRONMENT_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_BASEURL=${{ vars.AWS_SAM_PARAMETER_BASEURL }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACCOUNT=${{ vars.AWS_SAM_PARAMETER_ACCOUNT_ID_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_REGION=${{ vars.AWS_SAM_PARAMETER_REGION_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_DEV }} >> $GITHUB_ENV
+
+      - name: Setup AWS SAM Credentials
+        if: ${{ steps.is_aws_sam_application.outputs.files_exists }} == 'true'
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Get Application Version from app/config_default.yaml
+        run: echo """VERSION=$(grep 'BUILD_VERSION' app/config_default.yaml | cut -d '"' -f 2)""" >> $GITHUB_ENV
+      - name: Check if not main branch
+        if: github.ref != 'refs/heads/main'
+        run: echo CONTAINER_TAG="$VERSION"-${{ github.sha }} >> $GITHUB_ENV
+      - name: Check if main branch
+        if: github.ref == 'refs/heads/main'
+        run: echo CONTAINER_TAG="$VERSION" >> $GITHUB_ENV
+
+      - name: Setup CodeArtifact Access Credentials
+        run: echo CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --query authorizationToken --output text) >> $GITHUB_ENV
+
+      - name: Setup PIP Index URL Variable
+        run: echo PIP_INDEX_URL="https://aws:${{ env.CODEARTIFACT_AUTH_TOKEN }}@pws-codeartifact-827125260958.d.codeartifact.us-east-1.amazonaws.com/pypi/algorithm-shared-classes/simple/" >> $GITHUB_ENV
+
+      - name: Build AWS SAM Application
+        run: sam build --parameter-overrides DockerArgsPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
+
+      - name: Deploy AWS SAM Application
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=${{ env.AWS_SAM_PARAMETER_ENVIRONMENT }} BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }} DockerArgsPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}

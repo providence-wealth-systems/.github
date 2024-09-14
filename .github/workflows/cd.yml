@@ -68,7 +68,7 @@ jobs:
           files: 'setup.py'
   deploy_sam:
     needs: determine_if_sam
-    if: needs.determine_if_sam.outputs.file_exists == 'true'
+    if: needs.determine_if_sam.outputs.file_exists == 'true' && ${{ vars.IS_CONTAINERIZED_LAMBDA != 'yes' }}
     uses: providence-wealth-systems/.github/.github/workflows/deploy_sam.yml@main
     secrets: inherit
   deploy_s3:
@@ -80,4 +80,8 @@ jobs:
     needs: determine_if_library
     if: needs.determine_if_library.outputs.file_exists == 'true'
     uses: providence-wealth-systems/.github/.github/workflows/deploy_library.yml@main
+    secrets: inherit
+  deploy_lambda_containerized_code:
+    if: ${{ vars.IS_CONTAINERIZED_LAMBDA == 'yes' }}
+    uses: providence-wealth-systems/.github/.github/workflows/deploy_lambda_container.yml@main
     secrets: inherit
