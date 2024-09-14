@@ -89,7 +89,7 @@ jobs:
         run: echo CONTAINER_TAG="$VERSION" >> $GITHUB_ENV
 
       - name: what_is_variable
-      - run: echo IS_CONTAINERIZED_LAMBDA=${{ vars.IS_CONTAINERIZED_LAMBDA }}  >> $GITHUB_ENV
+        run: echo IS_CONTAINERIZED_LAMBDA=${{ vars.IS_CONTAINERIZED_LAMBDA }}  >> $GITHUB_ENV
 
       - name: Setup CodeArtifact Access Credentials
         run: echo CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --query authorizationToken --output text) >> $GITHUB_ENV
