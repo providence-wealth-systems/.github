@@ -82,8 +82,18 @@ jobs:
       - name: Setup CodeArtifact Access Credentials
         run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
 
-      - name: Build AWS SAM Application
+      - name: Build AWS SAM Application Non-Prod
+        if: github.ref != 'refs/heads/main'
         run: sam build -m requirements.txt
+
+      - name: Build AWS SAM Application Prod
+        if: github.ref == 'refs/heads/main'
+        run: sam build -m requirements.txt --template-file prod-template.yaml
       
-      - name: Deploy AWS SAM Application
+      - name: Deploy AWS SAM Application Non-Prod
+        if: github.ref != 'refs/heads/main'
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=${{ env.AWS_SAM_PARAMETER_ENVIRONMENT }} BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }}
+
+      - name: Deploy AWS SAM Application Prod
+        if: github.ref == 'refs/heads/main'
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --template-file prod-template.yaml

@@ -97,8 +97,18 @@ jobs:
       - name: Setup PIP Index URL Variable
         run: echo PIP_INDEX_URL="https://aws:${{ env.CODEARTIFACT_AUTH_TOKEN }}@pws-codeartifact-827125260958.d.codeartifact.us-east-1.amazonaws.com/pypi/algorithm-shared-classes/simple/" >> $GITHUB_ENV
 
-      - name: Build AWS SAM Application
+      - name: Build AWS SAM Application Non-Prod
+        if: github.ref != 'refs/heads/main'
         run: sam build --parameter-overrides DockerArgPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
 
-      - name: Deploy AWS SAM Application
+      - name: Build AWS SAM Application Prod
+        if: github.ref == 'refs/heads/main'
+        run: sam build --parameter-overrides DockerArgPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }} --template-file prod-template.yaml
+
+      - name: Deploy AWS SAM Application Non-Prod
+        if: github.ref != 'refs/heads/main'
         run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=${{ env.AWS_SAM_PARAMETER_ENVIRONMENT }} BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }} DockerArgsPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
+
+      - name: Deploy AWS SAM Application Prod
+        if: github.ref == 'refs/heads/main'
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --template-file prod-template.yaml
