@@ -63,18 +63,11 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
           cache-dir: "./cache"
-          format: 'sarif'
-          output: 'trivy-results.sarif'
       ## Trivy-db uses `0600` permissions.
       ## But `action/cache` use `runner` user by default
       ## So we need to change the permissions before caching the database.
       - name: Change permissions for trivy.db
         run: sudo chmod 0644 ./cache/db/trivy.db
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
   determine_if_dependency_check_suppression_file_exists:
     name: Determine If Dependency Check Suppression File Exists
     runs-on: ubuntu-latest
