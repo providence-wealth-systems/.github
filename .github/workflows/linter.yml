@@ -49,18 +49,23 @@ jobs:
         id: action_black
         with:
             black_args: "."
-      - name: Create Pull Request
+      # - name: Create Pull Request
+      #   if: steps.action_black.outputs.is_formatted == 'true'
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.WORKFLOW_TOKEN }}
+      #     title: "Black Linter Formatting Changes from psf/black check"
+      #     commit-message: ":art: Automated Black Linting Changes"
+      #     body: |
+      #       There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+      #       uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
+      #     base: ${{ github.head_ref }}
+      #     branch: actions/black
+      - name: Annotate PR Diff with Black Changes
         if: steps.action_black.outputs.is_formatted == 'true'
-        uses: peter-evans/create-pull-request@v5
+        uses: reviewdog/action-suggester@v1
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
-          title: "Black Linter Formatting Changes from psf/black check"
-          commit-message: ":art: Automated Black Linting Changes"
-          body: |
-            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
-            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
-          base: ${{ github.head_ref }}
-          branch: actions/black
+          tool_name: blackfmt
   lint_front_end:
     name: Lint using Prettier and ESLint
     runs-on: ubuntu-latest
