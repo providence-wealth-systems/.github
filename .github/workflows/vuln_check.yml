@@ -51,6 +51,9 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
+        env:
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
   determine_if_dependency_check_suppression_file_exists:
     name: Determine If Dependency Check Suppression File Exists
     runs-on: ubuntu-latest
