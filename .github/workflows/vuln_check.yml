@@ -54,7 +54,7 @@ jobs:
           restore-keys:
             trivy-cache-
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
