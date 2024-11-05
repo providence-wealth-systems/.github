@@ -42,19 +42,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}      
-      ## To avoid the trivy-db becoming outdated, we save the cache for one day
-      - name: Get Trivy Data
-        id: date
-        run: echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
-      - name: Restore trivy cache
-        uses: actions/cache@v4
-        with:
-          path: cache/db
-          key: trivy-cache-${{ steps.date.outputs.date }}
-          restore-keys:
-            trivy-cache-
-        env:
-          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -64,12 +51,6 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
-          cache-dir: "./cache"
-      ## Trivy-db uses `0600` permissions.
-      ## But `action/cache` use `runner` user by default
-      ## So we need to change the permissions before caching the database.
-      - name: Change permissions for trivy.db
-        run: sudo chmod 0644 ./cache/db/trivy.db
   determine_if_dependency_check_suppression_file_exists:
     name: Determine If Dependency Check Suppression File Exists
     runs-on: ubuntu-latest
