@@ -23,7 +23,7 @@ jobs:
     secrets: inherit
   build_and_publish_docker:
     uses: providence-wealth-systems/.github/.github/workflows/docker.yml@main
-    needs: vuln_check
+    needs: run_tests
     secrets: inherit
   deploy_production_artifacts:
     needs: build_and_publish_docker
