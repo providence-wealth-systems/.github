@@ -28,5 +28,6 @@ jobs:
     secrets: inherit
   deploy_production_artifacts:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/dev'
+    needs: run_tests
     uses: providence-wealth-systems/.github/.github/workflows/cd.yml@main
     secrets: inherit
