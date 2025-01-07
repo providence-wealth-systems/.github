@@ -6,7 +6,11 @@ jobs:
     name: Deploy To AWS
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/dev'
-    environment: ${{ github.ref_name }}
+    environment: ${{ 
+      github.ref == 'refs/heads/main' && 'production' ||
+      github.ref == 'refs/heads/staging' && 'staging' ||
+      github.ref == 'refs/heads/dev' && 'development'
+    }}
 
     steps:
       - name: Checkout Code
