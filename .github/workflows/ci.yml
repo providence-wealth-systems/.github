@@ -27,6 +27,6 @@ jobs:
     needs: run_tests
     secrets: inherit
   deploy_production_artifacts:
-    needs: build_and_publish_docker
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/dev'
     uses: providence-wealth-systems/.github/.github/workflows/cd.yml@main
     secrets: inherit
