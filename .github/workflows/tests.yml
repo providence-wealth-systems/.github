@@ -48,6 +48,9 @@ jobs:
     if: needs.determine_if_python.outputs.file_exists == 'true'
     steps:
     - uses: aws-actions/setup-sam@v2
+      with:
+        use-installer: true
+        token: ${{ secrets.GITHUB_TOKEN }}
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
@@ -89,6 +92,9 @@ jobs:
     if: needs.determine_if_js.outputs.file_exists == 'true'
     steps:
     - uses: aws-actions/setup-sam@v2
+      with:
+        use-installer: true
+        token: ${{ secrets.GITHUB_TOKEN }}
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}

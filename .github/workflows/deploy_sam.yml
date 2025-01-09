@@ -62,6 +62,7 @@ jobs:
         uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
