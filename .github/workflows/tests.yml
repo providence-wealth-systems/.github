@@ -47,43 +47,50 @@ jobs:
     needs: determine_if_python
     if: needs.determine_if_python.outputs.file_exists == 'true'
     steps:
-    - uses: aws-actions/setup-sam@v2
-      with:
-        use-installer: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
-        aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
-        aws-region: us-east-1
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.WORKFLOW_TOKEN }}
-    - name: Set up Python Environment
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
-        cache: 'pip'
-    - name: Install PIP Dependencies
-      run: |
-        aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Set ENV Variables
-      run: |
-        echo "TradRunEndpoint=${{ env.TradRunEndpoint }}" >> $GITHUB_ENV
-        echo "TradRunEndpointInfo=${{ env.TradRunEndpointInfo }}" >> $GITHUB_ENV
-        echo "PwsRunEndpoint=${{ env.PwsRunEndpoint }}" >> $GITHUB_ENV
-        echo "PwsRunEndpointInfo=${{ env.PwsRunEndpointInfo }}" >> $GITHUB_ENV
-        echo "EndowmentRunEndpoint=${{ env.EndowmentRunEndpoint }}" >> $GITHUB_ENV
-        echo "EndowmentRunEndpointInfo=${{ env.EndowmentRunEndpointInfo }}" >> $GITHUB_ENV
-        echo "ADDEPAR_SECRET_KEY=${{ secrets.ADDEPAR_SECRET_KEY }}" >> $GITHUB_ENV
-        echo "ADDEPAR_API_KEY=${{ secrets.ADDEPAR_API_KEY }}" >> $GITHUB_ENV
-        echo "ADDEPAR_ENCODED_KEY=${{ secrets.ADDEPAR_ENCODED_KEY }}" >> $GITHUB_ENV
-    - name: Run Tests
-      run: |
-        pip install -r test-requirements.txt
-        pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_STAGE }}
+          aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+          aws-region: us-east-1
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Cache PIP Dependencies
+        id: cache-pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install PIP Dependencies
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN }} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r test-requirements.txt
+      - name: Set ENV Variables
+        run: |
+          echo "TradRunEndpoint=${{ env.TradRunEndpoint }}" >> $GITHUB_ENV
+          echo "TradRunEndpointInfo=${{ env.TradRunEndpointInfo }}" >> $GITHUB_ENV
+          echo "PwsRunEndpoint=${{ env.PwsRunEndpoint }}" >> $GITHUB_ENV
+          echo "PwsRunEndpointInfo=${{ env.PwsRunEndpointInfo }}" >> $GITHUB_ENV
+          echo "EndowmentRunEndpoint=${{ env.EndowmentRunEndpoint }}" >> $GITHUB_ENV
+          echo "EndowmentRunEndpointInfo=${{ env.EndowmentRunEndpointInfo }}" >> $GITHUB_ENV
+          echo "ADDEPAR_SECRET_KEY=${{ secrets.ADDEPAR_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "ADDEPAR_API_KEY=${{ secrets.ADDEPAR_API_KEY }}" >> $GITHUB_ENV
+          echo "ADDEPAR_ENCODED_KEY=${{ secrets.ADDEPAR_ENCODED_KEY }}" >> $GITHUB_ENV
+      - name: Run Tests
+        run: |
+          pytest --cov-fail-under=80 --cache-clear --cov-config=.coveragerc -vv --cov-report xml:coverage.xml --cov-report term-missing --cov=app/ --junitxml=junit-xml.xml app/
 
   run_fe_test:
     name: Run Front End Tests
