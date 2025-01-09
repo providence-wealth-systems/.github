@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-          cache: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          cache: 'pip'
 
       - name: Setup CodeArtifact Access Credentials
         run: aws codeartifact login --tool pip --repository ${{ vars.CODEARTIFACT_SHARED_CLASS_REPOSITORY }} --domain ${{ vars.CODEARTIFACT_DOMAIN}} --domain-owner ${{ vars.CODEARTIFACT_DOMAIN_OWNER }} --region us-east-1
