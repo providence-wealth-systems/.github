@@ -11,7 +11,7 @@ env:
 jobs:
   run_pytest:
     name: Run Tests with PyTest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: aws-actions/setup-sam@v2
     - uses: aws-actions/configure-aws-credentials@v4

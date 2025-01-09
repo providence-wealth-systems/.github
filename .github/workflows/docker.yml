@@ -4,7 +4,7 @@ on:
 jobs:
   determine_if_python:
     name: Determine If Python Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
@@ -20,7 +20,7 @@ jobs:
           files: 'app/main.py'
   determine_if_js:
     name: Determine If Javascript Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
@@ -36,7 +36,7 @@ jobs:
           files: 'package.json'
   determine_if_dockerized_repository:
     name: Check if Dockerfile Exists
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_dockerized_repo.outputs.files_exists }}
@@ -51,7 +51,7 @@ jobs:
         with:
           files: 'Dockerfile'
   create_container_version_python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [determine_if_dockerized_repository, determine_if_python]
     if: ${{ always() && needs.determine_if_dockerized_repository.outputs.file_exists == 'true'  && needs.determine_if_python.outputs.file_exists == 'true'}}
     env: 
@@ -76,7 +76,7 @@ jobs:
         id: final_output
         run: echo CONTAINER_NAME="$CONTAINER_NAME" >> $GITHUB_OUTPUT
   create_container_version_js:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [determine_if_dockerized_repository, determine_if_js]
     if: ${{ always() && needs.determine_if_dockerized_repository.outputs.file_exists == 'true'  && needs.determine_if_js.outputs.file_exists == 'true'}}
     env: 
@@ -103,7 +103,7 @@ jobs:
   build_and_publish_container_python:
     name: Build & Publish Dockerfile (Python)
     needs: create_container_version_python
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_python.outputs.CONTAINER_NAME }}
     steps:
@@ -134,7 +134,7 @@ jobs:
   build_and_publish_container_js:
     name: Build & Publish Dockerfile (JavaScript)
     needs: create_container_version_js
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CONTAINER_NAME: ${{ needs.create_container_version_js.outputs.CONTAINER_NAME }}
     steps:

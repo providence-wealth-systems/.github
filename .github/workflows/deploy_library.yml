@@ -4,7 +4,7 @@ on:
 jobs:
   determine_if_library:
     name: Determine If Library Repositry
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     if: github.ref == 'refs/heads/main'
     outputs:
@@ -21,7 +21,7 @@ jobs:
           files: 'setup.py'
   publish_artifact:
     name: Deploy Library To AWS Code Artifact
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_if_library
     if: ${{ needs.determine_if_library.outputs.file_exists }} == 'true'
     steps:
@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
+          cache: 'pip'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

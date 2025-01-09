@@ -4,7 +4,7 @@ on:
 jobs:
   determine_if_python:
     name: Determine If Python Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
@@ -20,7 +20,7 @@ jobs:
           files: 'app/main.py'
   determine_if_js:
     name: Determine If Javascript Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
@@ -36,7 +36,7 @@ jobs:
           files: 'package.json'
   lint_with_black:
     name: Lint using Black
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_if_python
     if: needs.determine_if_python.outputs.file_exists == 'true'
     steps:
@@ -49,18 +49,6 @@ jobs:
         id: action_black
         with:
             black_args: "."
-      # - name: Create Pull Request
-      #   if: steps.action_black.outputs.is_formatted == 'true'
-      #   uses: peter-evans/create-pull-request@v5
-      #   with:
-      #     token: ${{ secrets.WORKFLOW_TOKEN }}
-      #     title: "Black Linter Formatting Changes from psf/black check"
-      #     commit-message: ":art: Automated Black Linting Changes"
-      #     body: |
-      #       There appear to be some python formatting errors in ${{ github.sha }}. This pull request
-      #       uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
-      #     base: ${{ github.head_ref }}
-      #     branch: actions/black
       - name: Annotate PR Diff with Black Changes
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
@@ -68,7 +56,7 @@ jobs:
           tool_name: blackfmt
   lint_front_end:
     name: Lint using Prettier and ESLint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_if_js
     if: needs.determine_if_js.outputs.file_exists == 'true'
     steps:

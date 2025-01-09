@@ -7,7 +7,7 @@ on:
 #   cancel-in-progress: true
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout Code
@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
       - uses: actions/cache@v3
         with:
           # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node

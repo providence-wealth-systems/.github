@@ -4,7 +4,7 @@ on:
 jobs:
   determine_if_python:
     name: Determine If Python Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
@@ -20,7 +20,7 @@ jobs:
           files: 'app/main.py'
   determine_if_js:
     name: Determine If Javascript Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
@@ -36,7 +36,7 @@ jobs:
           files: 'package.json'
   trivy_vuln_check:
     name: Run AquaSecurity Trivy Scan On Files (Vulnerabilities)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
           severity: 'CRITICAL,HIGH,MEDIUM'
   determine_if_dependency_check_suppression_file_exists:
     name: Determine If Dependency Check Suppression File Exists
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.suppression_file_exists.outputs.files_exists }}
@@ -69,7 +69,7 @@ jobs:
           files: 'dependencyCheckSuppressions.xml'
   dependency_check_python:
     name: Runs Dependency Check Against Libraries (Python)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [determine_if_dependency_check_suppression_file_exists, determine_if_python]
     if: ${{ always() && needs.determine_if_python.outputs.file_exists == 'true' }}
     steps:
@@ -86,6 +86,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
+          cache: 'pip'
       - name: Create local scan_dependencies Folder
         run: mkdir scan_dependencies
       - name: Setup PIP for CodeArtifact Access
@@ -115,7 +116,7 @@ jobs:
           path: ${{github.workspace}}/reports
   dependency_check_js:
     name: Runs Dependency Check Against Libraries (JavaScript)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [determine_if_dependency_check_suppression_file_exists, determine_if_js]
     if: ${{ always() && needs.determine_if_js.outputs.file_exists == 'true' }}
     steps:
@@ -127,6 +128,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
       - name: Create local scan_dependencies Folder
         run: mkdir scan_dependencies
       - name: Install Node.js dependencies

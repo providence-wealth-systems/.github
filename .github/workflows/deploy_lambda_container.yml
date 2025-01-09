@@ -4,7 +4,7 @@ on:
 jobs:
   deploy:
     name: Deploy To AWS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/dev'
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' || github.ref == 'refs/heads/dev' && 'development' }}
 

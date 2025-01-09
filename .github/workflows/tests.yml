@@ -11,7 +11,7 @@ env:
 jobs:
   determine_if_python:
     name: Determine If Python Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_python.outputs.files_exists }}
@@ -27,7 +27,7 @@ jobs:
           files: 'app/main.py'
   determine_if_js:
     name: Determine If Javascript Repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: true
     outputs:
       file_exists: ${{ steps.is_js.outputs.files_exists }}
@@ -43,7 +43,7 @@ jobs:
           files: 'package.json'
   run_pytest:
     name: Run Tests with PyTest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_if_python
     if: needs.determine_if_python.outputs.file_exists == 'true'
     steps:
@@ -84,7 +84,7 @@ jobs:
 
   run_fe_test:
     name: Run Front End Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_if_js
     if: needs.determine_if_js.outputs.file_exists == 'true'
     steps:
@@ -101,6 +101,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 18
+        cache: 'npm'
+        cache-dependency-path: 'package-lock.json'
     - name: Install Node.js dependencies
       run: npm ci
     - name: Run Tests
