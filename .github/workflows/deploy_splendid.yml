@@ -52,4 +52,4 @@ jobs:
           aws-region: us-east-2
 
       - name: Sync build artifact to S3
-        run: aws s3 sync out s3://pws-splendid/
+        run: aws s3 sync out s3://demo.preprod.providence-systems.com/
