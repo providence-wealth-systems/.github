@@ -1,6 +1,12 @@
 name: Continuous Integration Workflow
 on:
   workflow_call:
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  deployments: write
+  id-token: write
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
