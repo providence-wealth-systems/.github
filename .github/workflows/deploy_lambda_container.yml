@@ -32,6 +32,7 @@ jobs:
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_PROD }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_PROD }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_PROD }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_SIM_ENGINE=legacy >> $GITHUB_ENV
 
       - name: Check If Staging Branch
         if: github.ref == 'refs/heads/staging'
@@ -44,6 +45,7 @@ jobs:
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_STAGE }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_STAGE }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_STAGE }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_SIM_ENGINE=legacy >> $GITHUB_ENV
 
       - name: Check If Dev Branch
         if: github.ref == 'refs/heads/dev'
@@ -56,6 +58,7 @@ jobs:
           echo AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID=${{ vars.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID_DEV }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE=${{ vars.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE_DEV }} >> $GITHUB_ENV
           echo AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN=${{ vars.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN_DEV }} >> $GITHUB_ENV
+          echo AWS_SAM_PARAMETER_SIM_ENGINE=v2 >> $GITHUB_ENV
 
       - name: Setup AWS SAM Credentials
         if: ${{ steps.is_aws_sam_application.outputs.files_exists }} == 'true'
@@ -99,4 +102,4 @@ jobs:
         run: sam build --parameter-overrides DockerArgPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
         
       - name: Deploy AWS SAM Application
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }} DockerArgsPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides BaseURL=${{env.AWS_SAM_PARAMETER_BASEURL}} AWSAccount=${{ env.AWS_SAM_PARAMETER_ACCOUNT }} AWSRegion=${{ env.AWS_SAM_PARAMETER_REGION }} ACMCertificateId=${{ env.AWS_SAM_PARAMETER_ACM_CERTIFICATE_ID }} Route53HostedZone=${{ env.AWS_SAM_PARAMETER_ROUTE53_HOSTED_ZONE }} AddeparSecretARN=${{ env.AWS_SAM_PARAMETER_ADDEPAR_SECRETS_ARN }} SimEngine=${{ env.AWS_SAM_PARAMETER_SIM_ENGINE }} DockerArgsPipUrl=${{ env.PIP_INDEX_URL }} DockerImageTag=${{ env.CONTAINER_TAG }}
