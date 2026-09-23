@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Python
         id: is_python
         uses: andstor/file-existence-action@v3
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Javascript
         id: is_js
         uses: andstor/file-existence-action@v3
@@ -41,13 +41,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}      
+          token: ${{ github.token }}      
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scanners: 'vuln'
-          github-pat: ${{ secrets.WORKFLOW_TOKEN }}
+          github-pat: ${{ github.token }}
           exit-code: 1
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
@@ -61,7 +61,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Suppression File Exists
         id: suppression_file_exists
         uses: andstor/file-existence-action@v3
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Set up Python Environment
         uses: actions/setup-python@v5
         with:
@@ -123,7 +123,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:

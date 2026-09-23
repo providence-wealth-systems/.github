@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If SAM Application
         id: is_sam
         uses: andstor/file-existence-action@v3
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Next.js Application
         id: is_nextjs_app
         uses: andstor/file-existence-action@v3
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Everest FE Application
         id: is_everest_app
         uses: andstor/file-existence-action@v3
@@ -60,7 +60,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Next.js Application
         id: is_library
         uses: andstor/file-existence-action@v3

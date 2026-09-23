@@ -9,7 +9,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Run Black Against Code
         uses: rickstaa/action-black@v1
         id: action_black
@@ -19,7 +19,7 @@ jobs:
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
           title: "Black Linter Formatting Changes from psf/black check"
           commit-message: ":art: Automated Black Linting Changes"
           body: |

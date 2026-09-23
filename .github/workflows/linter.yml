@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Python
         id: is_python
         uses: andstor/file-existence-action@v3
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Check If Javascript
         id: is_js
         uses: andstor/file-existence-action@v3
@@ -43,7 +43,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Run Black Against Code
         uses: rickstaa/action-black@v1
         id: action_black
@@ -63,7 +63,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
