@@ -50,7 +50,7 @@ jobs:
           github-pat: ${{ github.token }}
           exit-code: 1
           ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
   determine_if_dependency_check_suppression_file_exists:
     name: Determine If Dependency Check Suppression File Exists
     runs-on: ubuntu-22.04
